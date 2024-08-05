@@ -1,0 +1,53 @@
+//s3 bucket creation
+
+resource "aws_s3_bucket" "mybucket" {
+  bucket = "vasu-bucket-08"
+  acl = "private"
+  tags = {
+    Name = "my-bucket"
+  }
+}
+
+//uploading a single file into s3 bucket 
+
+resource "aws_s3_bucket_object" "s3object" {
+  bucket = aws_s3_bucket.mybucket.id
+  key = "s3-terra.txt"
+  source = "path-of-the-file"
+  etag = filemd5("path-of-the-file")
+}
+
+//uploading multiple files
+
+resource "aws_s3_bucket_object" "s3Mobject" {
+  bucket = aws_s3_bucket.mybucket.id
+  for_each = fileset("path-of-folder")
+  key = each.value
+  source = "c:path-of-folder\${each.value}"
+  etag = filemd5("path-of-folder\${each.value}")
+}
+
+//folder creation
+
+variable "named_folder" {
+  type = string
+  default = "multiple-s3-files"
+}
+
+resource "aws_s3_bucket_object" "base_folder" {
+  bucket = aws_s3_bucket.mybucket.id
+  acl = "private"
+  key = "${var.named_folder}/"
+  content_type = "appliacation/x-directory"
+}
+
+//object into folder
+
+resource "aws_s3_bucket_object" "s3obj" {
+  bucket = aws_s3_bucket.mybucket.id
+  for_each = fileset("path-of-folder", "*")
+  key = "${var.named_folder}/$"\{each.value}"
+  source = "path-of-folder\${each.value}"
+  etag = filemd5("path-of-folder${each.value}")
+}
+}
