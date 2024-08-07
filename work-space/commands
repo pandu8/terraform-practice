@@ -1,0 +1,10 @@
+>> terraform workspace list
+>> terraform workspace new dev 
+>> terraform workspace select dev/test
+>> terraform workspace show 
+>> terraform workspace delete dev
+
+>>terraform init --var-file="terraform-dev.tfvars"
+>>terraform plan --var-file="terraform-dev.tfvars"
+>>terraform apply --var-file="terraform-dev.tfvars"
+>>terraform destroy --var-file="terraform-dev.tfvars"
